@@ -92,8 +92,8 @@ module ArduinoFirmata
 
     def sysex(command, data=[])
       ## http://firmata.org/wiki/V2.1ProtocolDetails#Sysex_Message_Format
-      raise ArgumentError, 'command must be Number' unless command.kind_of? Fixnum
-      raise ArgumentError, 'data must be 7bit-Number or Those Array' unless [Fixnum, Array].include? data.class
+      raise ArgumentError, 'command must be Number' unless command.kind_of? Integer
+      raise ArgumentError, 'data must be 7bit-Number or Those Array' unless [Integer, Array].include? data.class
 
       write_data = data.kind_of?(Array) ? data : [data]
       write START_SYSEX
@@ -105,17 +105,17 @@ module ArduinoFirmata
     end
 
     def digital_read(pin)
-      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Fixnum or pin < 0
+      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Integer or pin < 0
       (@digital_input_data[pin >> 3] >> (pin & 0x07)) & 0x01 > 0
     end
 
     def analog_read(pin)
-      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Fixnum or pin < 0
+      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Integer or pin < 0
       @analog_input_data[pin]
     end
 
     def pin_mode(pin, mode)
-      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Fixnum or pin < 0
+      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Integer or pin < 0
       write SET_PIN_MODE
       write pin
       mode = case mode
@@ -132,7 +132,7 @@ module ArduinoFirmata
     end
 
     def digital_write(pin, value)
-      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Fixnum or pin < 0
+      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Integer or pin < 0
       pin_mode pin, OUTPUT
       port_num = (pin >> 3) & 0x0F
       if value == 0 or value == false
@@ -149,8 +149,8 @@ module ArduinoFirmata
     end
 
     def analog_write(pin, value)
-      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Fixnum or pin < 0
-      raise ArgumentError, "invalid analog value (#{value})" if value.class != Fixnum or value < 0
+      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Integer or pin < 0
+      raise ArgumentError, "invalid analog value (#{value})" if value.class != Integer or value < 0
       pin_mode pin, PWM
       write(ANALOG_MESSAGE | (pin & 0x0F))
       write(value & 0x7F)
@@ -160,8 +160,8 @@ module ArduinoFirmata
     end
 
     def servo_write(pin, angle)
-      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Fixnum or pin < 0
-      raise ArgumentError, "invalid angle (#{angle})" if angle.class != Fixnum or angle < 0
+      raise ArgumentError, "invalid pin number (#{pin})" if pin.class != Integer or pin < 0
+      raise ArgumentError, "invalid angle (#{angle})" if angle.class != Integer or angle < 0
       pin_mode pin, SERVO
       write(ANALOG_MESSAGE | (pin & 0x0F))
       write(angle & 0x7F)
